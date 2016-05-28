@@ -1,5 +1,4 @@
 # set to directory of script
-setwd("/Users/frbl/Documents/Sensitive/Datasets/HoeGekIsNL/Fionneke/fionneke_var")
 #install.packages('devtools')
 #install.packages('qgraph')
 library('devtools')
@@ -65,7 +64,7 @@ main <- function() {
   }
 
   # Split the file into separate CSVs
-  #create_csvs(data_file=data_file, ids_to_keep = c(no_anhedonia, anhedonia))
+  create_csvs(data_file=data_file, ids_to_keep = c(no_anhedonia, anhedonia))
 
   # Generate var models for each individual. These are cached in the global 'res' variable.
   setwd('csv')
