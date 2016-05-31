@@ -38,7 +38,7 @@ data_file <- "mad_diary_all_update19feb2015_merge_fionneke.csv"
 core <- TRUE
 run_all <- FALSE
 bootstrap_iterations <- 2000
-use_100_min_value <- FALSE
+use_100_min_value <- TRUE
 
 no_anhedonia <- c(102232,104789,110514,110544,107110,109755,112244,111264,111884,105962,112450,110642,104703,
                   110375,111543,104229,109531,109747,110676,104255,109751,112186,105722,104231,106423)
@@ -72,15 +72,26 @@ main <- function() {
   removed_columns <- c('not_na_deactivation', 'not_na_activation', 'not_upset', 'na', 'pa',  'time', 'X', 'date')
   autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'na_activation', 'na_deactivation', 'activity', 'upset')
 
-  if(use_100_min_value) {
-    removed_columns <- c('na_deactivation', 'na_activation', 'upset', 'na', 'pa',  'time', 'X', 'date')
-    autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'not_na_activation', 'not_na_deactivation', 'activity', 'not_upset')
-  }
 
   print(paste('Removing', removed_columns))
   files <- list.files()
   all_loaded_files <<- load_all_files(files, removed_columns = removed_columns)
   setwd("../")
+
+
+  if(use_100_min_value) {
+    #removed_columns <- c('na_deactivation', 'na_activation', 'upset', 'na', 'pa',  'time', 'X', 'date')
+    autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'not_na_activation', 'not_na_deactivation', 'activity', 'not_upset')
+    for(i in 1:length(all_loaded_files)) {
+      data <- all_loaded_files[[i]]$raw_data
+      data['not_na_deactivation'] <- 100 - data['na_deactivation']
+      data['not_na_activation'] <- 100 - data['na_activation']
+      data['not_upset'] <- 100 - data['upset']
+      all_loaded_files[[i]]$raw_data <<- data
+      print(names(all_loaded_files[[i]]$raw_data))
+    }
+  }
+  print(autovar_columns)
 
   res <<- list()
   res <<- calculate_all_files(files = all_loaded_files, autovar_columns = autovar_columns)

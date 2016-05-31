@@ -2,7 +2,7 @@
   model <- aira_model$var_model
   .set_exo(model)
   aira_output <- AiraOutput$new(aira = aira_model)
-  df <- aira_output$.generate_network()
+  df <- aira_output$.generate_network(autoregressive = TRUE)
   df$name <- aira_model$name
 
   # Return both the updated model, as well as the result
@@ -78,9 +78,11 @@
       # Add the rsult to the result matrix (depending on the sign and the group)
       if (sign(as.numeric(weight)) < 0) {
         result_matrices[[group]][[negative_edges_option]][source, target] <- result_matrices[[group]][[negative_edges_option]][source, target] - 1
+        result_matrices[['total']][[negative_edges_option]][source, target] <- result_matrices[['total']][[negative_edges_option]][source, target] - 1
         result_matrices[[group]][['total']][source, target] <- result_matrices[[group]][['total']][source, target] + 1
       } else if (sign(as.numeric(weight)) > 0) {
         result_matrices[[group]][[positive_edges_option]][source, target] <- result_matrices[[group]][[positive_edges_option]][source, target] + 1
+        result_matrices[['total']][[positive_edges_option]][source, target] <- result_matrices[['total']][[positive_edges_option]][source, target] + 1
         result_matrices[[group]][['total']][source, target] <- result_matrices[[group]][['total']][source, target] + 1
       }
 

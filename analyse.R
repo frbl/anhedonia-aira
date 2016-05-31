@@ -17,7 +17,7 @@
     autovar_data <- autovar_result[[1]]
 
   } else {
-    file <-add_trend(file)
+    file <- add_trend(file)
     autovar_data <- var_main(file,
                             vars = autovar_columns,
                             log_level=3,
@@ -44,7 +44,6 @@
   autovar_data$name <- file$real_file_name
   autovar_data
 }
-
 
 calculate_all_files <- function(files, autovar_columns) {
   res <- lapply(files, .run_calculation, autovar_columns = autovar_columns)
