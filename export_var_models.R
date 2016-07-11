@@ -8,6 +8,8 @@ run_export <- function(model, file_name = NULL) {
     # Write output to file
     sink(file_name)
     print(paste("Logtransformed: ",model$logtransformed))
+    print(paste("Bucket: ", model$bucket))
+    print(paste('Lag:', model$varest$p))
     print(var_info(model$varest))
     sink()
 }

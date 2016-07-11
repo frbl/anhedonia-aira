@@ -1,4 +1,5 @@
 # set to directory of script
+#install.packages('Amelia')
 #install.packages('devtools')
 #install.packages('qgraph')
 library('devtools')
@@ -31,6 +32,7 @@ source('ask_question_function.R')
 source('good_bad_ratio_calculator.R')
 source('generate_var_network_images.R')
 source('calculate_mean_scores.R')
+source('create_descriptives_output.R')
 
 data_file <- "mad_diary_all_update19feb2015_merge_fionneke.csv"
 
@@ -77,8 +79,14 @@ main <- function() {
   files <- list.files()
   all_loaded_files <<- load_all_files(files, removed_columns = removed_columns)
   setwd("../")
-
-
+  
+  dirname <- paste('output',format(Sys.time(), "%Y%m%d-%H_%M_%S"), sep='-')
+  dir.create(dirname)
+  setwd(dirname)
+  
+  create_descriptives_output(files = all_loaded_files, dirname = 'desciptives_imputed_data')
+  
+  
   if(use_100_min_value) {
     #removed_columns <- c('na_deactivation', 'na_activation', 'upset', 'na', 'pa',  'time', 'X', 'date')
     autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'not_na_activation', 'not_na_deactivation', 'activity', 'not_upset')
@@ -90,18 +98,17 @@ main <- function() {
       all_loaded_files[[i]]$raw_data <<- data
       print(names(all_loaded_files[[i]]$raw_data))
     }
+    
+    create_descriptives_output(files = all_loaded_files, dirname = 'desciptives_positivized_imputed_data')
   }
-  print(autovar_columns)
-
+  
+  fail()
   res <<- list()
   res <<- calculate_all_files(files = all_loaded_files, autovar_columns = autovar_columns)
   good_bad_count(res, anhedonia, no_anhedonia)
 
   # Remove all invalid models, just to be sure
   res <<- res[paste(good_bad_count(res, anhedonia, no_anhedonia), '.csv',sep="")]
-  dirname <- paste('output',format(Sys.time(), "%Y%m%d-%H_%M_%S"), sep='-')
-  dir.create(dirname)
-  setwd(dirname)
 
   # Calculate the mean of the variables for each of the groups
   sink('mean_scores.txt')
@@ -118,7 +125,16 @@ main <- function() {
 
   # Should we generate the network JSON files of our var models?
   generate_graphs(res)
-
+  
+  dirname <- 'used_csvs'
+  dir.create(dirname)
+  setwd(dirname)
+  for (file_data in all_loaded_files) {
+    write.table(file_data$raw_data, paste('export', file_data$real_file_name, sep='_'), sep=',')
+  }
+  setwd('../')
+  
+  setwd('../');fail()
   # Should we export the 'raw' IRF plots (time - shock plots)
   # generate_irf_graphs(res, bootstrap_iterations)
 
