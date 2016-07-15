@@ -1,3 +1,4 @@
+setwd('~/Workspace/frbl/fionneke-aira')
 # set to directory of script
 #install.packages('Amelia')
 #install.packages('devtools')
@@ -37,7 +38,7 @@ source('create_descriptives_output.R')
 data_file <- "mad_diary_all_update19feb2015_merge_fionneke.csv"
 
 # Use autovar core?
-core <- TRUE
+core <- FALSE
 run_all <- FALSE
 bootstrap_iterations <- 2000
 use_100_min_value <- TRUE
@@ -47,6 +48,9 @@ no_anhedonia <- c(102232,104789,110514,110544,107110,109755,112244,111264,111884
 
 anhedonia <- c(104517,107596,108172,112028,100849,111939,101912,111745,111779,111464,111958,111473,111566,
                100713,111737,111778,110360,111184,111492,112052,105882,111459,110064,111268,111350)
+
+no_anhedonia <- c()
+anhedonia <- c(100849)
 
 main <- function() {
   # Time how long it takes
@@ -80,7 +84,9 @@ main <- function() {
   all_loaded_files <<- load_all_files(files, removed_columns = removed_columns)
   setwd("../")
   
-  dirname <- paste('output',format(Sys.time(), "%Y%m%d-%H_%M_%S"), sep='-')
+  
+  type <- ifelse(use_100_min_value, 'positive', 'normal')
+  dirname <- paste('output',type,format(Sys.time(), "%Y%m%d-%H_%M_%S"), sep='-')
   dir.create(dirname)
   setwd(dirname)
   
@@ -92,31 +98,45 @@ main <- function() {
     autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'not_na_activation', 'not_na_deactivation', 'activity', 'not_upset')
     for(i in 1:length(all_loaded_files)) {
       data <- all_loaded_files[[i]]$raw_data
+
       data['not_na_deactivation'] <- 100 - data['na_deactivation']
+      all_loaded_files[[i]]$data$multiple['not_na_deactivation'] <<- data['not_na_deactivation']
+
       data['not_na_activation'] <- 100 - data['na_activation']
+      all_loaded_files[[i]]$data$multiple['not_na_activation'] <<- data['not_na_activation']
+
       data['not_upset'] <- 100 - data['upset']
+      all_loaded_files[[i]]$data$multiple['not_upset'] <<- data['not_upset']
+
       all_loaded_files[[i]]$raw_data <<- data
       print(names(all_loaded_files[[i]]$raw_data))
     }
-    
+
     create_descriptives_output(files = all_loaded_files, dirname = 'desciptives_positivized_imputed_data')
   }
   
-  fail()
   res <<- list()
-  res <<- calculate_all_files(files = all_loaded_files, autovar_columns = autovar_columns)
-  good_bad_count(res, anhedonia, no_anhedonia)
+  total_res <<- list()
+  total_res <<- calculate_all_files(files = all_loaded_files, autovar_columns = autovar_columns)
+   
+  for (models in total_res) {
+    model <- models[[1]]
+    model$name <- models$name
+    res[[models$name]] <<- model
+  }
+  
+  #good_bad_count(res, anhedonia, no_anhedonia)
 
   # Remove all invalid models, just to be sure
-  res <<- res[paste(good_bad_count(res, anhedonia, no_anhedonia), '.csv',sep="")]
+  #res <<- res[paste(good_bad_count(res, anhedonia, no_anhedonia), '.csv',sep="")]
 
   # Calculate the mean of the variables for each of the groups
   sink('mean_scores.txt')
-  calculate_mean_scores(all_loaded_files, anhedonia, no_anhedonia, good_bad_count(res, anhedonia, no_anhedonia))
+  #calculate_mean_scores(all_loaded_files, anhedonia, no_anhedonia, good_bad_count(res, anhedonia, no_anhedonia))
   sink()
 
   # Should the var models be exported to a text file?
-  export_var_models(res)
+  export_var_models(total_res)
 
   # Should we export plots of the residuals of the var models?
   pdf(file="Standardized residual plots.pdf")
