@@ -14,13 +14,17 @@
       test_names = c("portmanteau", "portmanteau_squared","skewness"),
       imputation_iterations = 1
     )
-    autovar_data <- autovar_result[[1]]
+    autovar_data <- autovar_result
 
   } else {
     file <- add_trend(file)
+    
+    setwd("log")
+    sink(paste('log', file$real_file_name, sep='_'))
     autovar_data <- var_main(file,
                             vars = autovar_columns,
-                            log_level=3,
+                            log_level=1,
+                            criterion='BIC',
                             #lag_max=1, # Have a maximum of 1 lag
                             #exogenous_max_iterations=3, # Have a max of 3 exogeneous steps in outlier detection
                             simple_models = TRUE,
@@ -28,13 +32,9 @@
                             include_squared_trend = TRUE,
                             significance = 0.01
                             )
-
+    sink()
+    
     # Autovar model fitteng could generate a large set of models, cache the models in a caching directory.
-    setwd("cache")
-    if(length(autovar_data$accepted_models) > 0) {
-      print('Exporting model')
-      run_export(autovar_data$accepted_models[[1]], file$real_file_name)
-    }
     setwd("../")
   }
 
@@ -46,6 +46,11 @@
 }
 
 calculate_all_files <- function(files, autovar_columns) {
+  if(!core) {
+    dirname <- 'log'
+    dir.create(dirname)
+  }
+  
   res <- lapply(files, .run_calculation, autovar_columns = autovar_columns)
   res
 }
