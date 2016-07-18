@@ -46,11 +46,14 @@ run_export_for_more_models <- function(models, provided_file_name = NULL) {
   # Write output to file
   i = 1
   for (model in models) {
-    if( model == models$name) next
+    # This check is needed if we use autovarcore, as one of the models in the list is the name of the model
+    if(length(model) == 1 && model == models$name) next
+    
+    # If the provided name is nil, we just create one ourselves
     if(is.null(provided_file_name)) file_name <- models$name
     else file_name <- provided_file_name
     
-    file_name <- paste(strsplit(file_name, "\\.")[[1]][1],i, "txt", sep=".")
+    file_name <- paste(strsplit(file_name, "\\.")[[1]][1], i, "txt", sep=".")
     print(paste("Exporting: ", file_name, sep=""))
     model$varest$simple_models <- TRUE
     sink(file_name)

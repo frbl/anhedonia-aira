@@ -19,6 +19,7 @@ load_all_files <- function(files, measurements_per_day = 3,
     first_date <- file$data$multiple$date[1]
 
     # Remove unused columns
+    print(paste('Removing', removed_columns))
     file$raw_data <-file$raw_data[,!(names(file$raw_data) %in% removed_columns)]
 
     file$data[[1]] <- impute_dataframe(file$raw_data, measurements_per_day = measurements_per_day, repetitions = 150)
