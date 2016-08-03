@@ -51,10 +51,12 @@ initialize_aira <- function(var_models, iterations) {
 
 determine_best_aira_nodes_to_json <- function(airas) {
   files <- c()
-
+  print('Determining best aira nodes for all models')
   resulting_json <- mclapply(airas, .determine_best_node_to_json, mc.cores = detectCores())
+  print('Done generating, now exporting the jsons')
   airas_new <- list()
   for(i in 1:length(resulting_json)) {
+    print(paste('exporting json', i, 'of', length(resulting_json)))
     raw_file_name <-  resulting_json[[i]]$model[[1]]$name
     file_name <- paste(raw_file_name, "json", sep=".")
 

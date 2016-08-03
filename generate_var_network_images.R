@@ -2,7 +2,9 @@ export_aira_var_network_graphs <- function(airas) {
   plots <- list()
   plot.new()
   glob_minimum <- 0
+  i <- 1
   for(aira_model in airas) {
+    print(paste('Generating aira ouput network for AIRA model', i , 'of',length(airas)))
     group <- ''
     if(aira_model$name %in% anhedonia) group <- 'anhedonia'
     if(aira_model$name %in% no_anhedonia) group <- 'no anhedonia'
@@ -11,8 +13,10 @@ export_aira_var_network_graphs <- function(airas) {
     nms <- dimnames(var_network)[[2]]
     plots[[aira_model$name]] <- qgraph(var_network, plot=TRUE, edge.labels = TRUE, vsize = 10, layout = "spring", posCol = "chartreuse3", labels = nms,
                                        title=paste(group, '(', aira_model$name, ')'))
+    i<- i + 1
   }
   layout <- averageLayout(plots)
+  print('Exporting all plots')
   for(plot in plots) {
     qgraph(plot, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3")#,nodeNames=bdinms2,legend.cex=0.6)
   }

@@ -112,7 +112,7 @@
   qgraph(result_matrices$no_anhedonia$positive_edges, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
 
   qgraph(result_matrices$anhedonia$negative_edges,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(result_matrices$no_anhedonia$negative_edges, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$negative_edges, vsize=4.5, edge.labels = TRUE, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
 
   qgraph(.create_standard_deviation_matrix(result_matrices$anhedonia[['total-sd']], labels),  edge.labels = TRUE, vsize=4.5, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia Standard deviation")#,nodeNames=bdinms2,legend.cex=0.6)
   qgraph(.create_standard_deviation_matrix(result_matrices$no_anhedonia[['total-sd']], labels), edge.labels = TRUE,  vsize=4.5, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia Standard deviation")#,nodeNames=bdinms2,legend.cex=0.6)
