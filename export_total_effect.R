@@ -178,7 +178,7 @@
       table_result[row_name, total_effect_average_column] <- mean(total_sd)
     }
   }
-  write.csv(table_result, 'irf_edges_overview.csv')
+  write.csv2(table_result, 'irf_edges_overview.csv', dec='.')
 }
 
 export_total_effect_networks <- function(airas) {

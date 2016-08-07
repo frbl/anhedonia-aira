@@ -94,7 +94,7 @@ convert_data <- function(data) {
 
 simple_avg <- function(measurement) {
   my_list <- list()
-  
+
   #my_list$meetmoment   <- measurement['time']
   # my_list$missing      <- missing
   #my_list$dagdeel      <- convert_number_to_day_part(measurement)
@@ -116,7 +116,7 @@ simple_avg <- function(measurement) {
   #my_list$tekortschieten       <- as.numeric(get_value(measurement, names$tekortschieten))
   #my_list$piekeren             <- as.numeric(get_value(measurement, names$piekeren))
   #my_list$eenzaamheid          <- as.numeric(get_value(measurement, names$eenzaamheid))
-  
+
   # Fionneke variablen
   my_list$date                 <- convert_date(measurement['mad_diary_invited_at'])
   my_list$pa                   <- rounded_average(measurement, c(5, 7, 9, 11, 13, 15))
@@ -133,7 +133,7 @@ simple_avg <- function(measurement) {
   my_list$upset                <- as.numeric(get_value(measurement, names$ik_ben_van_slag))
   my_list$not_upset            <- 100 - as.numeric(get_value(measurement, names$ik_ben_van_slag))
   my_list
-  
+
 }
 
 convert_date <- function(dat) {
@@ -186,19 +186,19 @@ rounded_average <- function(measurement, question_numbers) {
   questions <- sapply(question_numbers, value_prefix)
   current_data <- measurement[questions]
   current_data <- sapply(current_data, as.numeric)
-  
+
   for(i in 1:length(question_numbers)) {
     if(!is.na(current_data[i]) && question_numbers[i] < 0  ) {
       current_data[i] <- inverse_value(current_data[i])
     }
   }
-  
+
   mean(current_data, na.rm = TRUE)
 }
 
 categorize_duration <- function(value) {
   res = NA
-  
+
   if(is.na(value))
     res = NA
   else if (findInterval(value, c(0,33.333) ) == 1)
@@ -216,40 +216,40 @@ valid_id <- function(id, ids_to_keep) {
 
 create_csvs <- function(data_file, ids_to_keep) {
   minimal_measurement_count = 1 || round(0.75*90)
-  
+
   data.raw <- read.csv(data_file, header=TRUE, sep=",", dec=".", stringsAsFactors=FALSE)
-  
+
   data.sanitized <- data.raw
-  
+
   # Only use period 1 data
   data.sanitized <- data.sanitized[data.sanitized$period == 1,]
-  
+
   # Only use data filled out within the hour, the single pipe is used to do elementwise OR
   data.sanitized[(is.na(data.sanitized$time_completed) | data.sanitized$time_completed > 60), selected_columns] <- NA
-  
+
   # Only use measurements having > minimal_measurement_count measurements
   data.sanitized <- data.sanitized[data.sanitized$observations > minimal_measurement_count,]
-  
+
   # Remove trailing measurements if a person has > 90
   data.sanitized <- data.sanitized[data.sanitized$time <= 90,]
-  
+
   # Extra measure, check if there are still 999's in the data, by looking at mad_diary_1
   test_variable <- na.omit(data.sanitized[(data.sanitized$mad_diary_1 >= 999), "mad_diary_1"])
   if(length(as.vector(test_variable))) stop('The data still contains 999 values!!!')
-  
+
   # Split the data per patient
   data.splitted <- split(data.sanitized, data.sanitized$patient_id)
   unlink('csv', recursive = TRUE, force = TRUE)
   dir.create('csv')
   setwd('csv')
-  
+
   for(i in 1:length(data.splitted)) {
     current <- data.splitted[[i]]
     id <- current$id[1]
     if(!is.na(id) && nrow(data.splitted[[i]]) >= minimal_measurement_count && valid_id(id, ids_to_keep)) {
       converted_data = convert_data(current)
       # NaNs in the dataframe will be handled gracefully and are converted to NAs.
-      write.csv(converted_data, file = paste(id, "csv", sep="."))
+      write.csv2(converted_data, file = paste(id, "csv", sep="."), dec='.')
     }
   }
   setwd('../')

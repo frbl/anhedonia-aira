@@ -177,7 +177,7 @@ determine_best_aira_nodes_to_json <- function(airas) {
   #}
   #if(noedges > 0) print(paste(noedges,'networks without edges found'))
 
-  #write.csv(table_result, 'irf_edges_overview.csv')
+  #write.csv2(table_result, 'irf_edges_overview.csv', dec='.')
 
   ## Set minimas for the plotting output
   #minimum <- 0
@@ -270,7 +270,7 @@ determine_how_to_reduce_stress <- function(airas){
   }
   # remove the X column
   result_df <- result_df[-c(1),]
-  write.csv(result_df, 'reducing_stress_percentages.csv')
+  write.csv2(result_df, 'reducing_stress_percentages.csv', dec='.')
   airas_new
 }
 
