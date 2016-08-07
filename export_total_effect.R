@@ -61,42 +61,57 @@
     result_matrices[[group]][['total']] <- result_matrices[[group]][['total']] + net$network
   }
   if(noedges > 0) print(paste(noedges,'networks without edges found'))
-  list(airas = airas_new, result_matrices = result_matrices)
+  list(airas = airas_new, result_matrices = result_matrices, names=names)
 }
 
-.plot_total_effect_networks <- function(result_matrices) {
+.plot_total_effect_networks <- function(result_matrices, groups, participant_names) {
   # Set minimas for the plotting output
   minimum <- 0
   glob_minimum <- 0
+  use_short_labels <- TRUE
 
   labels <- dimnames(result_matrices$anhedonia$total)[[2]]
+
+  if(use_short_labels){
+    labels <- strsplit(labels, '_')
+    labels <- lapply(labels, substr,1,1)
+    labels <- lapply(labels, paste, sep='', collapse='')
+    labels <- toupper(labels)
+  }
   plot.new()
 
   #Create the plots for the layout
   plottable  <- result_matrices$anhedonia$total
-  plot_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, layout="spring", edge.labels = TRUE, labels = labels)
+  plot_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, groups=groups, layout="circle", edge.labels = TRUE, labels = labels)
   plottable  <- result_matrices$no_anhedonia$total
-  plot_no_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, layout="spring", edge.labels = TRUE, labels = labels)
-  layout <- averageLayout(plot_an_total, plot_no_an_total)
+  plot_no_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, groups=groups,layout="circle", edge.labels = TRUE, labels = labels)
+  layout <- 'circle' #averageLayout(plot_an_total, plot_no_an_total)
 
-  qgraph(result_matrices$anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia total effect summed")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(result_matrices$no_anhedonia$total, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum,  layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia total effect summed")#,nodeNames=bdinms2,legend.cex=0.6)
+  minimum = abs(min(result_matrices$anhedonia$total, result_matrices$no_anhedonia$total))
+  maximum = max(result_matrices$anhedonia$total, result_matrices$no_anhedonia$total, minimum)
+  qgraph(result_matrices$anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia total effect summed")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$total, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia total effect summed")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$anhedonia$total - result_matrices$no_anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = minimum, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia and no anhedonia effects summed, and the difference calculated (an - no an)")#,nodeNames=bdinms2,legend.cex=0.6)
 
-  qgraph(result_matrices$anhedonia$total / length(anhedonia),  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia total effect summed, and averaged")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(result_matrices$no_anhedonia$total / length(no_anhedonia), vsize=4.5, edge.labels = TRUE, minimum = glob_minimum,  layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia total effect summed, and average")#,nodeNames=bdinms2,legend.cex=0.6)
+  minimum = abs(min(result_matrices$anhedonia$total/length(anhedonia), result_matrices$no_anhedonia$total/length(anhedonia)))
+  maximum = max(result_matrices$anhedonia$total/length(anhedonia), result_matrices$no_anhedonia$total/length(anhedonia), minimum)
+  qgraph(result_matrices$anhedonia$total / length(anhedonia),  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum = maximum, layout=layout, groups=groups,posCol="chartreuse3",labels=labels,title="Anhedonia total effect summed, and averaged")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$total / length(no_anhedonia), vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum = maximum,  layout=layout,groups=groups, posCol="chartreuse3",labels=labels,title="No Anhedonia total effect summed, and average")#,nodeNames=bdinms2,legend.cex=0.6)
 
-  qgraph(result_matrices$anhedonia$total - result_matrices$no_anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia and no anhedonia effects summed, and the difference calculated (an - no an)")#,nodeNames=bdinms2,legend.cex=0.6)
 
-  plottable <- .create_standard_deviation_matrix(result_matrices$anhedonia[['total-sd']], labels)
-  qgraph(plottable,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia, Standard deviation of effect")#,nodeNames=bdinms2,legend.cex=0.6)
-
-  plottable <- .create_standard_deviation_matrix(result_matrices$no_anhedonia[['total-sd']], labels)
-  qgraph(plottable,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia, Standard deviation of effect")#,nodeNames=bdinms2,legend.cex=0.6)
+  plottable_sd_anhedonia <- .create_standard_deviation_matrix(result_matrices$anhedonia[['total-sd']], labels)
+  plottable_sd_no_anhedonia <- .create_standard_deviation_matrix(result_matrices$no_anhedonia[['total-sd']], labels)
+  minimum = abs(min(plottable_sd_anhedonia, plottable_sd_no_anhedonia))
+  maximum = max(plottable_sd_anhedonia, plottable_sd_no_anhedonia, minimum)
+  qgraph(plottable_sd_no_anhedonia,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum = maximum, layout=layout, groups=groups,posCol="chartreuse3",labels=labels,title="No Anhedonia, Standard deviation of effect")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(plottable_sd_anhedonia,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum = maximum, layout=layout, groups=groups,posCol="chartreuse3",labels=labels,title="Anhedonia, Standard deviation of effect")#,nodeNames=bdinms2,legend.cex=0.6)
 
   plottable <- .create_standard_deviation_matrix(result_matrices$total[['total-sd']], labels)
-  qgraph(plottable,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Total, Standard deviation of effect")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(plottable,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout,groups=groups, posCol="chartreuse3",labels=labels,title="Total, Standard deviation of effect")#,nodeNames=bdinms2,legend.cex=0.6)
 
   # Create a network for each individual participant
+  minimum = abs(min(unlist(lapply(result_matrices$total[['total-sd']], min, na.rm=TRUE))))
+  maximum = max(unlist(lapply(result_matrices$total[['total-sd']], max, na.rm=TRUE)), minimum)
   for (index in 1:length(result_matrices$total[['total-sd']][[1]])) {
     K <- dim(result_matrices$total[['total-sd']])[1]
     plottable <- .create_result_matrix(labels, K, 0)
@@ -108,9 +123,12 @@
     }
     if (all(is.na(plottable))) next
 
+    my_minimum = abs(min(plottable))
+    my_maximum = abs(max(plottable))
     print(paste("Plotting " , index))
-    title <- paste("Total effect a variable has on another variable (the significant effects summed)", names[index])
-    qgraph(plottable,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title=title)#,nodeNames=bdinms2,legend.cex=0.6)
+    print(paste('Mymin', my_minimum,'glob',minimum, 'mymax', my_maximum,'glob',maximum))
+    title <- paste("Total effect a variable has on another variable (the significant effects summed)", participant_names[index])
+    qgraph(plottable, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum=maximum, layout=layout,groups=groups, posCol="chartreuse3",labels=labels,title=title)#,nodeNames=bdinms2,legend.cex=0.6)
   }
 }
 
@@ -178,10 +196,10 @@
       table_result[row_name, total_effect_average_column] <- mean(total_sd)
     }
   }
-  write.csv2(table_result, 'irf_edges_overview.csv', dec='.')
+  write.csv2(table_result, 'irf_edges_overview.csv')
 }
 
-export_total_effect_networks <- function(airas) {
+export_total_effect_networks <- function(airas,general_groups) {
   networks_output <- mclapply(airas, .generate_total_effect_network, mc.cores = detectCores())
   groups <- c('other', 'anhedonia', 'no_anhedonia', 'total')
   options <- c('total', 'total-sd')
@@ -194,7 +212,7 @@ export_total_effect_networks <- function(airas) {
   .table_total_effect_networks(output$result_matrices, names)
 
   pdf(file="Total_effect_of_one_variable_on_the_other_(irf).pdf")
-  .plot_total_effect_networks(output$result_matrices)
+  .plot_total_effect_networks(output$result_matrices, general_groups, output$names)
   dev.off()
   output$airas
 }

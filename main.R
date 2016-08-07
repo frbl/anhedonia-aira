@@ -6,7 +6,7 @@ setwd('~/Workspace/frbl/fionneke-aira')
 library('devtools')
 #install_github('roqua/autovar')
 #install_github('roqua/autovarCore')
-install_github('frbl/airaR', auth_token='ed012aed075dc0dace90b8ad35ecdf7736d29ec9')
+#install_github('frbl/airaR', auth_token='ed012aed075dc0dace90b8ad35ecdf7736d29ec9')
 unloadNamespace('autovar')
 unloadNamespace('aira')
 
@@ -78,12 +78,14 @@ main <- function() {
 
   # These columns will be used for the actual var analysis.
   autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'na_activation', 'na_deactivation', 'activity', 'upset')
+  groups <- list(c('pa_activation', 'pa_deactivation'), c('na_activation', 'na_deactivation'), c('activity', 'upset'))
 
   # These are the variables that will be inverted using AIRA
-  negative_variables <- c( 'not_na_activation', 'not_na_deactivation', 'not_upset', 'na_activation', 'na_deactivation', 'upset', 'lnna_activation', 'lnna_deactivation', 'lnupset')
+  #negative_variables <- c( 'not_na_activation', 'not_na_deactivation', 'not_upset', 'na_activation', 'na_deactivation', 'upset', 'lnna_activation', 'lnna_deactivation', 'lnupset')
+  negative_variables <- c('not_pa_activation', 'not_pa_deactivation', 'not_activity', 'pa_activation', 'pa_deactivation', 'activity', 'lnpa_activation', 'lnpa_deactivation', 'lnactivity')
 
   #files <- list.files()
-  #all_loaded_files <<- load_all_files(files, removed_columns = removed_columns)
+  all_loaded_files <<- load_all_files(files, removed_columns = removed_columns)
   setwd("../")
 
 
@@ -119,26 +121,26 @@ main <- function() {
 
   # Change the variable names to NOT_.. if we have a positive model.
   if(use_positive_model) {
-    autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'not_na_activation', 'not_na_deactivation', 'activity', 'not_upset')
+    autovar_columns <- c( 'not_pa_activation', 'not_pa_deactivation', 'na_activation', 'na_deactivation', 'not_activity', 'upset')
+    groups <- list(c('not_pa_activation', 'not_pa_deactivation'), c('na_activation', 'na_deactivation'), c('not_activity', 'upset'))
     for(i in 1:length(all_loaded_files)) {
       for (positive_name in negative_variables) {
         data <- all_loaded_files[[i]]$raw_data
 
-        data['not_na_deactivation'] <- data['na_deactivation']
-        all_loaded_files[[i]]$data$multiple['not_na_deactivation'] <<- data['not_na_deactivation']
+        data['not_pa_deactivation'] <- data['pa_deactivation']
+        all_loaded_files[[i]]$data$multiple['not_pa_deactivation'] <<- data['not_pa_deactivation']
 
-        data['not_na_activation'] <- data['na_activation']
-        all_loaded_files[[i]]$data$multiple['not_na_activation'] <<- data['not_na_activation']
+        data['not_pa_activation'] <- data['pa_activation']
+        all_loaded_files[[i]]$data$multiple['not_pa_activation'] <<- data['not_pa_activation']
 
-        data['not_upset'] <- data['upset']
-        all_loaded_files[[i]]$data$multiple['not_upset'] <<- data['not_upset']
+        data['not_activity'] <- data['activity']
+        all_loaded_files[[i]]$data$multiple['not_activity'] <<- data['not_activity']
 
         all_loaded_files[[i]]$raw_data <<- data
         print(names(all_loaded_files[[i]]$raw_data))
       }
     }
   }
-
 
   # Res is a list containing the best model generated using autovar core.
   res <<- list()
@@ -152,7 +154,7 @@ main <- function() {
   for (models in total_res) {
     model <- models[[1]]
     model$name <- models$name
-    #res[[models$name]] <<- model
+    res[[models$name]] <<- model
   }
 
   # Print the quality of the models
@@ -215,7 +217,7 @@ main <- function() {
   # Aira models are cached, and also contain a cache themselves. It can take a lot of time to fill those caches, hence, be
   # careful when you regenerate the AIRA 'models'
   print('Initializing AIRA models')
-  #airas <<- initialize_aira(res, bootstrap_iterations)
+  airas <<- initialize_aira(res, bootstrap_iterations)
 
   # Remove all invalid models
   print('Removing invalid models, again')
@@ -241,7 +243,7 @@ main <- function() {
   # This is the second of the actual AIRA steps. Generate a network that shows the total effect one of the
   # variables has on the other variables
   print('Exporting total effect networks.')
-  airas <<- export_total_effect_networks(airas)
+  airas <<- export_total_effect_networks(airas, groups)
 
   setwd('../')
 

@@ -249,7 +249,7 @@ create_csvs <- function(data_file, ids_to_keep) {
     if(!is.na(id) && nrow(data.splitted[[i]]) >= minimal_measurement_count && valid_id(id, ids_to_keep)) {
       converted_data = convert_data(current)
       # NaNs in the dataframe will be handled gracefully and are converted to NAs.
-      write.csv2(converted_data, file = paste(id, "csv", sep="."), dec='.')
+      write.csv2(converted_data, file = paste(id, "csv", sep="."))
     }
   }
   setwd('../')

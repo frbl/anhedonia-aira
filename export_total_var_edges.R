@@ -229,7 +229,7 @@
       table_result[row_name, total_edge_average_column] <- mean(total_sd)
     }
   }
-  write.csv2(table_result, 'var_edges_overview.csv', dec='.')
+  write.csv2(table_result, 'var_edges_overview.csv')
 }
 
 export_total_var_edges <- function(airas) {
