@@ -73,7 +73,8 @@ export_var_models <- function(var_models) {
   setwd('var_models')
   #mclapply(var_models, run_export, mc.cores = detectCores())
   for(model in var_models) {
-    if(is.vector(model)){
+    # TODO: THis won't work with regular autovar.
+    if(is.null(model$bucket)){
       run_export_for_more_models(model)      
     } else {
       run_export(model) 
