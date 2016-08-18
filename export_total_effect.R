@@ -46,11 +46,8 @@
         result_matrices[[group]][['total-sd']][source, target] <- cur
 
         # Retrieve the positive and negative values
-        cur <- result_matrices[[group]][[label]][source, target]
-        NonNAindex_cur <- which(is.na(cur[[1]]))
-        index_cur <- min(NonNAindex_cur)
-        cur[[1]][index_cur] <- weight
-        result_matrices[[group]][[label]][source, target] <- cur
+        cur_label <- result_matrices[[group]][[label]][source, target]
+        result_matrices[[group]][[label]][source, target] <- cur_label + weight
 
         cur_total <- result_matrices$total[['total-sd']][source, target]
         NonNAindex_total <- which(is.na(cur_total[[1]]))
