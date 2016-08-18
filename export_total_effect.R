@@ -46,7 +46,6 @@
         result_matrices[[group]][['total-sd']][source, target] <- cur
 
         # Retrieve the positive and negative values
-        result_matrices[[group]][[label]][source, target] <- cur
         cur <- result_matrices[[group]][[label]][source, target]
         NonNAindex_cur <- which(is.na(cur[[1]]))
         index_cur <- min(NonNAindex_cur)
