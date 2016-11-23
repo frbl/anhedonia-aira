@@ -97,11 +97,20 @@
   plot_no_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, groups=groups,layout="circle", edge.labels = TRUE, labels = labels)
   layout <- 'circle' #averageLayout(plot_an_total, plot_no_an_total)
 
+  # Positief en negatief matrices
+  maximum = max(result_matrices$anhedonia$positive_count, result_matrices$no_anhedonia$positive_count)
+  maximum = max(maximum, result_matrices$anhedonia$negative_count, result_matrices$no_anhedonia$negative_count)
+  qgraph(result_matrices$anhedonia$positive_count,  vsize=4.5, edge.labels = TRUE, minimum = 0, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$anhedonia$negative_count * -1,  vsize=4.5, edge.labels = TRUE, minimum = 0, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$positive_count,  vsize=4.5, edge.labels = TRUE, minimum = 0, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$negative_count * -1,  vsize=4.5, edge.labels = TRUE, minimum = 0, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
+
   minimum = abs(min(result_matrices$anhedonia$total, result_matrices$no_anhedonia$total))
   maximum = max(result_matrices$anhedonia$total, result_matrices$no_anhedonia$total, minimum)
   qgraph(result_matrices$anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia total effect summed")#,nodeNames=bdinms2,legend.cex=0.6)
   qgraph(result_matrices$no_anhedonia$total, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia total effect summed")#,nodeNames=bdinms2,legend.cex=0.6)
   qgraph(result_matrices$anhedonia$total - result_matrices$no_anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = minimum, maximum=maximum, groups=groups,layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia and no anhedonia effects summed, and the difference calculated (an - no an)")#,nodeNames=bdinms2,legend.cex=0.6)
+
 
   minimum = abs(min(result_matrices$anhedonia$total/length(anhedonia), result_matrices$no_anhedonia$total/length(anhedonia)))
   maximum = max(result_matrices$anhedonia$total/length(anhedonia), result_matrices$no_anhedonia$total/length(anhedonia), minimum)
