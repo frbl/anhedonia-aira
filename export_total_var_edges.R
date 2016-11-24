@@ -92,30 +92,29 @@
   list(airas = airas_new, result_matrices = result_matrices)
 }
 
-.plot_total_var_networks <- function(result_matrices) {
+.plot_total_var_networks <- function(result_matrices, labels) {
   plot.new()
 
   glob_minimum <- 2
   minimum <- glob_minimum
-  labels <- dimnames(result_matrices$anhedonia$total)[[2]]
-
+  
   plottable  <- result_matrices$anhedonia$total
-  plot_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, layout="spring", edge.labels = TRUE, labels = labels)
+  plot_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, layout="circle", edge.labels = TRUE, labels = labels,  vsize=glob_vsize)
   plottable  <- result_matrices$no_anhedonia$total
-  plot_no_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, layout="spring", edge.labels = TRUE, labels = labels)
+  plot_no_an_total <- qgraph(plottable, plot= FALSE, minimum = minimum, layout="circle", edge.labels = TRUE, labels = labels,  vsize=glob_vsize)
 
   layout <- averageLayout(plot_an_total, plot_no_an_total)
-  qgraph(result_matrices$anhedonia$total,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia Total")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(result_matrices$no_anhedonia$total, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum,  layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia Total")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$anhedonia$total,  vsize=glob_vsize, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia Total")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$total,  vsize=glob_vsize, edge.labels = TRUE, minimum = glob_minimum,  layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia Total")#,nodeNames=bdinms2,legend.cex=0.6)
 
-  qgraph(result_matrices$anhedonia$positive_edges,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(result_matrices$no_anhedonia$positive_edges, vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$anhedonia$positive_edges,  vsize=glob_vsize, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$positive_edges,  vsize=glob_vsize, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia positive edges")#,nodeNames=bdinms2,legend.cex=0.6)
 
-  qgraph(result_matrices$anhedonia$negative_edges,  vsize=4.5, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(result_matrices$no_anhedonia$negative_edges, vsize=4.5, edge.labels = TRUE, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$anhedonia$negative_edges,  vsize=glob_vsize, edge.labels = TRUE, minimum = glob_minimum, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(result_matrices$no_anhedonia$negative_edges,  vsize=glob_vsize, edge.labels = TRUE, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia negative edges")#,nodeNames=bdinms2,legend.cex=0.6)
 
-  qgraph(.create_standard_deviation_matrix(result_matrices$anhedonia[['total-sd']], labels),  edge.labels = TRUE, vsize=4.5, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia Standard deviation")#,nodeNames=bdinms2,legend.cex=0.6)
-  qgraph(.create_standard_deviation_matrix(result_matrices$no_anhedonia[['total-sd']], labels), edge.labels = TRUE,  vsize=4.5, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia Standard deviation")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(.create_standard_deviation_matrix(result_matrices$anhedonia[['total-sd']], labels),  edge.labels = TRUE,  vsize=glob_vsize, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="Anhedonia Standard deviation")#,nodeNames=bdinms2,legend.cex=0.6)
+  qgraph(.create_standard_deviation_matrix(result_matrices$no_anhedonia[['total-sd']], labels), edge.labels = TRUE,  vsize=glob_vsize, minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia Standard deviation")#,nodeNames=bdinms2,legend.cex=0.6)
 }
 
 .table_total_var_networks <- function(result_matrices, names) {
@@ -232,14 +231,14 @@
   write.csv2(table_result, 'var_edges_overview.csv')
 }
 
-export_total_var_edges <- function(airas) {
+export_total_var_edges <- function(airas, name_mapping) {
   networks_output <- mclapply(airas, .generate_networks, mc.cores = detectCores())
 
   groups <- c('other', 'anhedonia', 'no_anhedonia', 'total')
   options <- c('total','positive_edges', 'negative_edges',
                'total-sd')
   names <- dimnames(airas[[1]]$var_model$y)[[2]]
-
+  labeled_names <- as.vector(unlist(name_mapping[names]))
   #number of variables
   K <- airas[[1]]$var_model$K
 
@@ -248,7 +247,7 @@ export_total_var_edges <- function(airas) {
   .table_total_var_networks(output$result_matrices, names)
 
   pdf(file="VAR_model_edge_counts(var).pdf")
-  .plot_total_var_networks(output$result_matrices)
+  .plot_total_var_networks(output$result_matrices, labeled_names)
   dev.off()
   output$airas
 }
