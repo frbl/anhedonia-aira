@@ -41,6 +41,7 @@
   # Save the last model found globally.
   last_model <<- autovar_data
 
+  # Store the name of the file for later access and return the autovar model.
   autovar_data$name <- file$real_file_name
   autovar_data
 }
