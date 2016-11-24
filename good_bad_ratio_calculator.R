@@ -3,6 +3,10 @@ good_bad_count <- function(res, anhedonia, no_anhedonia) {
     print("Var modellen nog niet berekend")
     return()
   }
+  
+  # If the score is higher than or equal to this, it is considered valid.
+  maximal_bucket_score = 0.01
+  
   count.good <- 0
   count.bad <- 0
   count.anhedonia_good <- c()
@@ -11,6 +15,8 @@ good_bad_count <- function(res, anhedonia, no_anhedonia) {
   for (model in res) {
     print(paste('Processing',model$name))
     id = strsplit(model$name, "\\.")[[1]][1]
+    
+    # If we are dealing with old autovar
     if(class(model) == "av_state") {
       if(length(model$accepted_models) >= 1){
         count.good <- count.good + 1
@@ -23,8 +29,10 @@ good_bad_count <- function(res, anhedonia, no_anhedonia) {
       }else {
         count.bad <- count.bad + 1
       }
+
+    # If we are dealing with autovarcore
     }else{
-      if (model$bucket >= 0.01) {
+      if (model$bucket >= maximal_bucket_score) {
         count.good <- count.good + 1
         if(id %in% anhedonia)
           count.anhedonia_good <- c(count.anhedonia_good, id)
@@ -54,10 +62,10 @@ good_bad_count <- function(res, anhedonia, no_anhedonia) {
   cur_no_anhedonia <- c(102232, 104789, 110514, 110544, 107110, 109755, 112244, 111264, 111884, 105962, 110642, 104703, 111543, 109531, 109747, 110676, 109751, 105722, 104231, 106423)
   cur_anhedonia <- c(104517, 107596, 108172, 112028, 100849, 111939, 101912, 111745, 111779, 111464, 111473, 111566, 111737, 110360, 111184, 111492, 111459, 112052, 111268, 111350)
 
-  print('We will be using this anhedoniagroup:')
-  print(cur_anhedonia)
   print('We will be using this no-anhedoniagroup:')
   print(cur_no_anhedonia)
+  print('We will be using this anhedoniagroup:')
+  print(cur_anhedonia)
   
   c(cur_no_anhedonia, cur_anhedonia)
 }
