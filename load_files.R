@@ -7,10 +7,9 @@ load_all_files <- function(files, measurements_per_day = 3,
     file_list[[file]] <- load_file(file,log_level = 3)
     i <- i + 1
   }
+  print('Loading 100 %')
 
-  set.seed(12345) # 84% # 60% regular autovar
-  #set.seed(54321) # 82%
-  #set.seed(47388) # 82%
+  set.seed(12345)
   i<- 0
   for(file_name in files) {
     print(paste('Imputing', file_name, '(', (i / length(files)) * 100,'%)'))
@@ -33,5 +32,6 @@ load_all_files <- function(files, measurements_per_day = 3,
 
     i <- i + 1
   }
+  print('Imputing 100 %')
   file_list
 }
