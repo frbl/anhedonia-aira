@@ -261,10 +261,10 @@
       table_result[row_name, no_anhedonia_sd_column] <- sd(no_an_total_sd)
       table_result[row_name, no_anhedonia_positive_column] <-  no_an_positive
       table_result[row_name, no_anhedonia_positive_count_column] <-  no_an_positive_count
-      table_result[row_name, no_anhedonia_positive_range_column] <-  ifelse(length(no_an_total_sd[an_total_sd > 0]) > 0, paste(range(no_an_total_sd[an_total_sd > 0]), collapse=' - '), "0")
+      table_result[row_name, no_anhedonia_positive_range_column] <-  ifelse(length(no_an_total_sd[no_an_total_sd > 0]) > 0, paste(range(no_an_total_sd[no_an_total_sd > 0]), collapse=' - '), "0")
       table_result[row_name, no_anhedonia_negative_column] <-  no_an_negative
       table_result[row_name, no_anhedonia_negative_count_column] <-  no_an_negative_count
-      table_result[row_name, no_anhedonia_negative_range_column] <-  ifelse(length(no_an_total_sd[an_total_sd < 0]) > 0, paste(range(no_an_total_sd[an_total_sd < 0]), collapse=' - '), "0")
+      table_result[row_name, no_anhedonia_negative_range_column] <-  ifelse(length(no_an_total_sd[no_an_total_sd < 0]) > 0, paste(range(no_an_total_sd[no_an_total_sd < 0]), collapse=' - '), "0")
       table_result[row_name, no_anhedonia_average_column] <- mean(no_an_total_sd)
 
       # Total
