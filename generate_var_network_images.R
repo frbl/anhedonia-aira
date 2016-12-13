@@ -6,8 +6,8 @@ export_aira_var_network_graphs <- function(airas, name_mapping) {
   for(aira_model in airas) {
     print(paste('Generating aira ouput network for AIRA model', i , 'of',length(airas)))
     group <- ''
-    if(aira_model$name %in% anhedonia) group <- 'anhedonia'
-    if(aira_model$name %in% no_anhedonia) group <- 'no anhedonia'
+    if(aira_model$name %in% anhedonia) group <- 'Anhedonia'
+    if(aira_model$name %in% no_anhedonia) group <- 'No anhedonia'
     aira_output <- AiraOutput$new(aira = aira_model)
     var_network <- aira_output$export_var_network(autoregressive=TRUE)
     nms <- dimnames(var_network)[[2]]

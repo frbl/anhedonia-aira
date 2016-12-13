@@ -118,7 +118,7 @@
   qgraph(.create_standard_deviation_matrix(result_matrices$no_anhedonia[['total-sd']], labels), edge.labels = TRUE,  minimum = 0, layout=layout, posCol="chartreuse3",labels=labels,title="No Anhedonia Standard deviation", edge.label.position=glob_label_position, edge.width=glob_edge_width,edge.label.cex=glob_edge_label_cex, label.norm=glob_label_norm,vsize=glob_vsize,esize=glob_esize,fade=glob_fade,colfactor=glob_colfactor)
 }
 
-.table_total_var_networks <- function(result_matrices, names) {
+.table_total_var_networks <- function(result_matrices, names, name_mapping) {
   # Table to store the results in to export to a csv file
   table_result <- data.frame()
 
@@ -182,7 +182,7 @@
 
   for (source in names) {
     for (target in names) {
-      row_name <- paste(source, '>', target, sep=" ")
+      row_name <- paste(name_mapping[source], '>', name_mapping[target], sep=" ")
 
       # Anhedonia
       an_total    <- result_matrices$anhedonia$total[source, target]
@@ -245,7 +245,7 @@ export_total_var_edges <- function(airas, name_mapping) {
 
   output <- .fill_var_matrices(networks_output, groups, options, names, K)
 
-  .table_total_var_networks(output$result_matrices, names)
+  .table_total_var_networks(output$result_matrices, names, name_mapping)
 
   pdf(file="VAR_model_edge_counts(var).pdf")
   .plot_total_var_networks(output$result_matrices, labeled_names)
