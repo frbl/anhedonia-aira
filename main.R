@@ -40,7 +40,14 @@ data_file <- "mad_diary_all_update19feb2015_merge_fionneke.csv"
 # Use autovar core?
 core <- TRUE
 bootstrap_iterations <- 2000
-glob_vsize <<- 10
+glob_vsize <<- 8
+glob_colfactor <<- 0.9
+glob_esize <<- 9
+glob_label_norm <<- "00000"
+glob_edge_label_cex <<- 1.5
+glob_edge_width<<-1.5
+glob_label_position<<-0.65
+glob_fade <<- TRUE
 
 # These two lists contain ALL models, and will be sanitized in a later step
 no_anhedonia <- c(102232,104789,110514,110544,107110,109755,112244,111264,111884,105962,112450,110642,104703,
@@ -76,12 +83,12 @@ main <- function() {
   # These columns will be used for the actual var analysis.
   autovar_columns <- c( 'pa_activation', 'pa_deactivation', 'na_activation', 'na_deactivation', 'activity', 'upset')
   groups <- list(c('pa_activation', 'pa_deactivation'), c('na_activation', 'na_deactivation'), c('activity', 'upset'))
-  
-  name_mapping <- list('pa_activation'='PAHigh', 
-                       'pa_deactivation'='PALow', 
-                       'na_activation'='NAHigh', 
-                       'na_deactivation'= 'NALow', 
-                       'activity'='Activity', 
+
+  name_mapping <- list('pa_activation'='PA High',
+                       'pa_deactivation'='PA Low',
+                       'na_activation'='NA High',
+                       'na_deactivation'= 'NA Low',
+                       'activity'='Activity',
                        'upset'='Stress')
 
   files <- list.files()
@@ -169,7 +176,7 @@ main <- function() {
   pdf(file="var_models.pdf")
   export_aira_var_network_graphs(airas, name_mapping)
   dev.off()
-  
+
   # This is one of the actual AIRA steps. Calculate which of the nodes has the most impact on the other nodes
   print('Determining best AIRA nodes for each model')
   airas <<- determine_best_aira_nodes_to_json(airas)
