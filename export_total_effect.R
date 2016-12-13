@@ -165,8 +165,8 @@
 }
 
 .create_in_out_degree_matrix <- function(adjacency_matrix, participant, col_labels,  current_matrix=c()) {
-  instrength <- colSums(adjacency_matrix)
-  outstrength <- rowSums(adjacency_matrix)
+  instrength <- colSums(abs(adjacency_matrix))
+  outstrength <- rowSums(abs(adjacency_matrix))
 
   current_matrix = rbind(current_matrix, instrength)
   rownames(current_matrix) <- c(head(rownames(current_matrix),-1), paste(participant, 'indegree'))
