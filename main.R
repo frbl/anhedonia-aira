@@ -35,6 +35,7 @@ source('generate_var_network_images.R')
 source('calculate_mean_scores.R')
 source('create_descriptives_output.R')
 
+set.seed(12345)
 data_file <- "mad_diary_all_update19feb2015_merge_fionneke.csv"
 
 # Use autovar core?
