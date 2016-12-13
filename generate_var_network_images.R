@@ -12,9 +12,8 @@ export_aira_var_network_graphs <- function(airas, name_mapping) {
     var_network <- aira_output$export_var_network(autoregressive=TRUE)
     nms <- dimnames(var_network)[[2]]
     nms <- as.vector(unlist(name_mapping[nms]))
-    plots[[aira_model$name]] <- qgraph(var_network, plot=TRUE, edge.labels = TRUE, layout = "circle", posCol = "chartreuse3", labels = nms,
-                                       title=paste(group, '(', aira_model$name, ')', edge.label.position=glob_label_position, edge.width=glob_edge_width,edge.label.cex=glob_edge_label_cex, label.norm=glob_label_norm,vsize=glob_vsize,esize=glob_esize,fade=glob_fade,colfactor=glob_colfactor)
-)
+    plots[[aira_model$name]] <- qgraph(var_network, plot=TRUE, edge.labels = TRUE, layout = "circle", posCol = "chartreuse3", labels = nms, title=paste(group, '(', aira_model$name, ')'), edge.label.position=glob_label_position, edge.width=glob_edge_width,edge.label.cex=glob_edge_label_cex, label.norm=glob_label_norm,vsize=glob_vsize,esize=glob_esize,fade=glob_fade,colfactor=glob_colfactor)
+
     i<- i + 1
   }
   layout <- averageLayout(plots)

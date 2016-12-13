@@ -181,7 +181,7 @@
   current_matrix
 }
 
-.table_total_effect_networks <- function(result_matrices, names) {
+.table_total_effect_networks <- function(result_matrices, names, name_mapping) {
   table_result <- data.frame()
   anhedonia_count_column <- 'anhedonia_count'
   anhedonia_column <- 'anhedonia'
@@ -239,7 +239,7 @@
 
   for (source in names) {
     for (target in names) {
-      row_name <- paste(source, '>', target, sep=" ")
+      row_name <- paste(name_mapping[source], '>', name_mapping[target], sep=" ")
 
 
       # Anhedonia
@@ -303,7 +303,7 @@ export_total_effect_networks <- function(airas,general_groups, name_mapping) {
   K <- airas[[1]]$var_model$K
   output <- .fill_total_effect_matrices(networks_output, groups, options, names, K)
 
-  .table_total_effect_networks(output$result_matrices, names)
+  .table_total_effect_networks(output$result_matrices, names, name_mapping)
 
   pdf(file="Total_effect_of_one_variable_on_the_other_(irf).pdf")
   .plot_total_effect_networks(output$result_matrices, general_groups, output$names, output$name_hedonia_group, name_mapping)
