@@ -157,7 +157,7 @@ main <- function() {
   setwd('../')
 
   # Should we export the 'raw' IRF plots (time - shock plots)
-  generate_irf_graphs(res, bootstrap_iterations)
+  #generate_irf_graphs(res, bootstrap_iterations)
 
   # Create a directory for the AIRA files (and also some regular var files)
   dir.create('aira')

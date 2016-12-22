@@ -1,4 +1,6 @@
 .generate_total_effect_network <- function(aira_model) {
+  # We have to reser the seed because this part is ran in parallel
+  set.seed(12345)
   model <- aira_model$var_model
   .set_exo(model)
   result <- list()
