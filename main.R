@@ -6,7 +6,7 @@ setwd('~/Workspace/frbl/fionneke-aira')
 library('devtools')
 #install_github('roqua/autovar')
 #install_github('roqua/autovarCore')
-#install_github('frbl/airaR', auth_token='ed012aed075dc0dace90b8ad35ecdf7736d29ec9')
+#install_github('frbl/airaR')
 unloadNamespace('autovar')
 unloadNamespace('aira')
 
@@ -49,6 +49,9 @@ glob_edge_label_cex <<- 1.5
 glob_edge_width<<-1.5
 glob_label_position<<-0.65
 glob_fade <<- TRUE
+
+poslinetype <<- 1
+neglinetype <<- 5
 
 # These two lists contain ALL models, and will be sanitized in a later step
 no_anhedonia <- c(102232,104789,110514,110544,107110,109755,112244,111264,111884,105962,112450,110642,104703,
