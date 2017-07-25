@@ -1,4 +1,3 @@
-setwd('~/Workspace/frbl/fionneke-aira')
 # set to directory of script
 #install.packages('Amelia')
 #install.packages('devtools')
@@ -6,7 +5,7 @@ setwd('~/Workspace/frbl/fionneke-aira')
 library('devtools')
 #install_github('roqua/autovar')
 #install_github('roqua/autovarCore')
-#install_github('frbl/airaR', auth_token='ed012aed075dc0dace90b8ad35ecdf7736d29ec9')
+#install_github('frbl/airaR')
 unloadNamespace('autovar')
 unloadNamespace('aira')
 
