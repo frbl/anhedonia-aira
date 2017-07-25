@@ -49,6 +49,9 @@ glob_edge_width<<-1.5
 glob_label_position<<-0.65
 glob_fade <<- TRUE
 
+poslinetype <<- 1
+neglinetype <<- 5
+
 # These two lists contain ALL models, and will be sanitized in a later step
 no_anhedonia <- c(102232,104789,110514,110544,107110,109755,112244,111264,111884,105962,112450,110642,104703,
                   110375,111543,104229,109531,109747,110676,104255,109751,112186,105722,104231,106423)
@@ -156,7 +159,7 @@ main <- function() {
   setwd('../')
 
   # Should we export the 'raw' IRF plots (time - shock plots)
-  generate_irf_graphs(res, bootstrap_iterations)
+  #generate_irf_graphs(res, bootstrap_iterations)
 
   # Create a directory for the AIRA files (and also some regular var files)
   dir.create('aira')
