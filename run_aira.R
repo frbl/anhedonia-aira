@@ -43,6 +43,8 @@ initialize_aira <- function(var_models, iterations) {
 .determine_best_node_to_json <- function(aira_model) {
   #aira_model <- airas[[2]]
   #aira_model <- airas[[1]]
+  # Resetting the seed here as this process is run multicore, and the seed is not passed to the new process
+  set.seed(12345)
   model <- aira_model$var_model
   .set_exo(model)
   aira_output <- AiraOutput$new(aira = aira_model)
@@ -241,6 +243,8 @@ determine_best_aira_nodes_to_json <- function(airas) {
 #' @param airas the list of airas to use
 #' @return airas the updated list of airas
 .determine_percentage_effect_for_model <- function(aira_model) {
+  # We set a seed here again because this part is run in parallel
+  set.seed(12345)
   model <- aira_model$var_model
   .set_exo(model)
   result <- list()

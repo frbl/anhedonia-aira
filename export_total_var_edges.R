@@ -1,4 +1,6 @@
 .generate_networks <- function(aira_model) {
+  # We set the seed here again because this is run in parallel
+  set.seed(12345)
   model <- aira_model$var_model
   .set_exo(model)
   aira_output <- AiraOutput$new(aira = aira_model)

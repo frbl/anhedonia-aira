@@ -1,4 +1,6 @@
 .generate_single_image <- function(model, iterations, orthogonal){
+  # Resetting the seed, as this is run multicore and is non deterministic because of the bootstrap
+  set.seed(12345)
   print('Generating new model')
   .set_exo(model$varest)
   bootstrap = FALSE
