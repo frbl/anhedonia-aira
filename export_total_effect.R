@@ -344,6 +344,11 @@ export_total_effect_networks <- function(airas,general_groups, name_mapping) {
   pdf(file="Total_effect_of_one_variable_on_the_other_(irf).pdf")
   .plot_total_effect_networks(output$result_matrices, general_groups, output$names, output$name_hedonia_group, name_mapping)
   dev.off()
+
+  tikzDevice::tikz('Total_effect_of_one_variable_on_the_other_(irf).tex', standAlone = TRUE, width=5, height=5)
+  .plot_total_effect_networks(output$result_matrices, general_groups, output$names, output$name_hedonia_group, name_mapping)
+  dev.off()
+
   output$airas
 }
 
